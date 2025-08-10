@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+       
+        <label class="switch">
+            <input type="checkbox" id="themeSwitch">
+            <span class="slider">
+                 <span>🌤️</span>
+                 <span>🌙</span>
+            </span>
+        </label>
+        
+    </div>
+
+    <!-- main heading -->
+    <h2>Enter Car Details</h2>
+    <!-- Forms input  -->
+    <form id="predictForm">
+        <label for="modelname">Choose Model:</label>
+        <select id="modelname" name="model" required>
+            <option value="">-- Select Model --</option>
+            <option value="Ford B-MAX">Ford B-MAX</option>
+            <option value="Ford C-MAX">Ford C-MAX</option>
+            <option value="Ford EcoSport">Ford EcoSport</option>
+            <option value="Ford Edge">Ford Edge</option>
+            <option value="Ford Escort">Ford Escort</option>
+            <option value="Ford Fiesta">Ford Fiesta</option>
+            <option value="Ford Focus">Ford Focus</option>
+            <option value="Ford Fusion">Ford Fusion</option>
+            <option value="Ford Galaxy">Ford Galaxy</option>
+            <option value="Ford Grand C-MAX">Ford Grand C-MAX</option>
+            <option value="Ford Grand Tourneo Connect">Ford Grand Tourneo Connect</option>
+            <option value="Ford KA">Ford KA</option>
+            <option value="Ford Ka+">Ford Ka+</option>
+            <option value="Ford Kuga">Ford Kuga</option>
+            <option value="Ford Mondeo">Ford Mondeo</option>
+            <option value="Ford Mustang">Ford Mustang</option>
+            <option value="Ford Puma">Ford Puma</option>
+            <option value="Ford Ranger">Ford Ranger</option>
+            <option value="Ford S-MAX">Ford S-MAX</option>
+            <option value="Ford Streetka">Ford Streetka</option>
+            <option value="Ford Tourneo Connect">Ford Tourneo Connect</option>
+            <option value="Ford Tourneo Custom">Ford Tourneo Custom</option>
+            <option value="Ford Transit Tourneo">Ford Transit Tourneo</option>
+        </select>
+
+        <label for="transmission">Transmission:</label>
+        <select id="transmission" name="transmission" required>
+            <option value="">-- Select Transmission --</option>
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
+            <option value="Semi-Auto">Semi-Auto</option>
+        </select>
+
+        <label for="fuelType">Fuel Type:</label>
+        <select id="fuelType" name="fuelType" required>
+            <option value="">-- Select Fuel Type --</option>
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <div class="two-column">
+            <div>
+                <label for="year">Year:</label>
+                <select id="year" name="year" required>
+                    <option value="">-- Select Year --</option>
+                    <!-- Years will be inserted here -->
+                </select>
+            </div>
+
+            <div>
+                <label for="mileage">Mileage:</label>
+                <input type="number" id="mileage" name="mileage" placeholder="Mileage" required>
+            </div>
+
+            <div>
+                <label for="tax">Tax:</label>
+                <input type="number" id="tax" name="tax" placeholder="Tax" required>
+            </div>
+
+            <div>
+                <label for="mpg">Miles per Gallon:</label>
+                <input type="number" id="mpg" name="mpg" placeholder="MPG" required>
+            </div>
+        </div>
+        <label for="engineSize">Engine Size (L):</label>
+        <input type="number" id="engineSize" step="0.1" name="engineSize" placeholder="Engine Size" max="5.00"
+            min="1.00" required>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <!-- Output -->
+
+    <h3 id="result">Predicted Price</h3>
+
+
+    <!-- js for get predicter value -->
+    <script>
+        document.getElementById('predictForm').onsubmit = async (e) => {
+            e.preventDefault();
+            let formData = new FormData(e.target);
+            let response = await fetch('/predict', { method: 'POST', body: formData });
+            let result = await response.json();
+            document.getElementById('result').innerText =
+                result.price ? `Predicted Price: $${result.price}` : `Error: ${result.error}`;
+        };
+    </script>
+
+    <!-- js for year range  -->
+    <script>
+        // Populate year dropdown from 1950 to 2100
+        const yearSelect = document.getElementById('year');
+        for (let y = 2100; y >= 1950; y--) {
+            let option = document.createElement('option');
+            option.value = y;
+            option.textContent = y;
+            yearSelect.appendChild(option);
+        }
+    </script>
+
+    <!-- js for mode  -->
+     <script>
+        const themeSwitch = document.getElementById('themeSwitch');
+
+        // Check saved theme in localStorage
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeSwitch.checked = true;
+        }
+
+        themeSwitch.addEventListener('change', () => {
+            if (themeSwitch.checked) {
+                document.body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
